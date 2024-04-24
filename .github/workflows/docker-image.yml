@@ -20,10 +20,10 @@ jobs:
         username: ${{ vars.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }} 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{ vars.DOCKERHUB_USERNAME }}/it-tools:$(date +%s)
-    - name: Docker tag image
-      run: docker tag ${{ vars.DOCKERHUB_USERNAME }}/it-tools:$(date +%s) ${{ vars.DOCKERHUB_USERNAME }}/it-tools:latest
-    - name: Docker push tag image
-      run: docker push ${{ vars.DOCKERHUB_USERNAME }}/it-tools:$(date +%s)
+      run: docker build . --file Dockerfile --tag $GITHUB_REPOSITORY:$GITHUB_RUN_NUMBER
+    - name: Docker push image
+      run: docker push $GITHUB_REPOSITORY:$GITHUB_RUN_NUMBER
+    - name: Docker tag latest image
+      run: docker tag $GITHUB_REPOSITORY:$GITHUB_RUN_NUMBER $GITHUB_REPOSITORY:latest
     - name: Docker push latest image
-      run: docker push ${{ vars.DOCKERHUB_USERNAME }}/it-tools:latest
+      run: docker push $GITHUB_REPOSITORY:latest
