@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker login
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }} 
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/it-tools:$(date +%s)
+    - name: Docker tag image
+      run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/it-tools:$(date +%s) ${{ secrets.DOCKERHUB_USERNAME }}/it-tools:latest
+    - name: Docker push tag image
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/it-tools:$(date +%s)
+    - name: Docker push latest image
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/it-tools:latest
